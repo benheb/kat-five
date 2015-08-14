@@ -7,14 +7,16 @@
 
     //store options 
     this.options = options;
+    this._isAnimating = true;
 
     this.wireScrollTricks();
     this.initTrackMap();
     this.initPopulationMap();
     this.initOrleansChart();
     this.initPeopleChart();
-    //this.initHomesChart();
+    this.initHomesChart();
     this.initMajorCanes();
+    this.initJobsCharts();
     this.wire();
   }
 
@@ -40,7 +42,7 @@
       element: document.getElementById('section-track-map'),
       handler: function(direction) {
         if ( direction === 'down' ) {
-          self._animateTrack();
+          //self._animateTrack();
         }
       },
       offset: offset
@@ -301,6 +303,7 @@
           return windScale(d.properties['Wind(WMO)']);
         })
         .on("mouseenter", function(d) {
+          self._isAnimating = false;
           d3.select(this)
             .transition()
             .duration(500)
@@ -319,9 +322,14 @@
             });
 
           $('#track-infowin').hide();
+
+          self._isAnimating = true;
+          setTimeout(function() {
+            self._animateTrack();
+          },800);
         });
         
-        //self._animateTrack();
+        self._animateTrack();
 
 
     }
@@ -333,31 +341,55 @@
 
 
   App.prototype._animateTrack = function() {
-
-    d3.selectAll('.track')
-      .attr('r', 0)
-      .each(function(d, i) {
-        d3.select(this)
-          .transition()
-          //.delay(function( d, i ) { return Math.floor((Math.random()*4000)+300); })
-          .delay( 200 * i )
-          .duration(3000)
-          .attr('r', function(d) {
-            return d.properties['Wind(WMO)'] / 10;
+    var self = this;
+    
+    if ( this._isAnimating ) {
+      d3.selectAll('.track')
+        .attr('r', 0)
+        .each(function(d, i) {
+          d3.select(this)
+            .transition()
+            //.delay(function( d, i ) { return Math.floor((Math.random()*4000)+300); })
+            .delay( 200 * i )
+            .duration(3000)
+            .attr('r', function(d) {
+              return d.properties['Wind(WMO)'] / 10;
+            });
           });
-        });
 
-    d3.selectAll('.track-outer')
-      .attr('r', 0)
-      .each(function(d, i) {
+      var tick = 0; 
+      d3.selectAll('.track-outer')
+        .attr('r', 0)
+        .each(function(d, i) {
           d3.select(this)
             .transition()
             .delay( 200 * i )
             .duration(3000)
             .attr('r', function(d) {
               return d.properties['Wind(WMO)'] / 2.5;
-            });
+            })
+            .each('end', function(f, o) {
+              tick++; 
+              if ( tick === 34 ) {
+                if ( self._isAnimating ) {
+                  setTimeout(function() {
+                    d3.selectAll('.track')
+                        .transition()
+                        .duration(1000)
+                        .attr('r', 0);
+                    d3.selectAll('.track-outer')
+                        .transition()
+                        .duration(1000)
+                        .attr('r', 0);
+                  },2000);
+                  setTimeout(function() {
+                    self._animateTrack();
+                  },3600);
+                }
+              }
+            })
         });
+    }
   }
 
 
@@ -552,12 +584,128 @@
 
   App.prototype.initHomesChart = function() {
     var html;
-    for( var i = 0; i<=35000; i++ ) {
-      html = '<span class="home-point"></span>';
-      $('#homes-chart').append(html);
-    }
+
+    var chart = c3.generate({
+      bindto: '#homes-chart',
+      size: {
+        height: 250
+      },
+      bar: {
+        width: 30
+      },
+      padding: {
+        left: 90,
+        right:20
+      },
+      color: {
+        pattern: ['#FABF62', '#ACB6DD']
+      },
+      data: {
+        x: 'x',
+        columns: [
+          ['x', 'Hurricane Katrina', 'Sandy', 'Hurricane Andrew', 'Galveston Hurricane'],
+          ['Homes Damaged or Destroyed', 662758, 650000, 126495, 3500]
+        ],
+
+        type: 'bar',
+
+        color: function(inColor, data) {
+          var colors = ["#f0f9e8", "#bae4bc", "#7bccc4", "#2b8cbe"].reverse();
+          if (data.index !== undefined) {
+            return colors[data.index];
+          }
+
+          return inColor;
+        }
+      },
+      axis: {
+        rotated: true,
+        x: {
+          type: 'category'
+        }
+      },
+      tooltip: {
+        grouped: false
+      },
+      legend: {
+        show: false
+      }
+    });
   }
 
+
+
+
+  App.prototype.initJobsCharts = function() {
+    queue()
+      .defer(d3.csv, "data/new-orleans-jobs.csv")
+      .await(ready);
+
+    function ready(error, jobs) { 
+      console.log('jobs', jobs);
+
+      var unemployed = c3.generate({
+        bindto: '#unemployment-rate',
+        size: {
+          height: 250
+        },
+        padding: {
+          left: 40,
+          right:30
+        },
+        data: {
+          json: jobs,
+          type: 'line',
+          keys: {
+            x: 'Year',
+            value: ['unemployment_rate']
+          }
+        },
+        color: {
+          pattern: ['#34495e']
+        },
+        axis: {
+          x: {
+            type: 'category',
+            tick: {
+              count: 3
+            }
+          }
+        }
+      });
+
+      var force = c3.generate({
+        bindto: '#labor-force',
+        size: {
+          height: 250
+        },
+        padding: {
+          left: 50,
+          right:50
+        },
+        data: {
+          json: jobs,
+          type: 'line',
+          keys: {
+            x: 'Year',
+            value: ['labor_force']
+          }
+        },
+        color: {
+          pattern: ['#34495e']
+        },
+        axis: {
+          x: {
+            type: 'category',
+            tick: {
+              count: 3
+            }
+          }
+        }
+      });
+
+    };
+  }
 
 
 
@@ -591,6 +739,11 @@
 
     d3.select(window).on('resize', function() {
       self.resize()
+    });
+
+
+    $('#animate-track').on('click', function() {
+      self._animateTrack();
     });
 
   }

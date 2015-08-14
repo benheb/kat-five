@@ -37,15 +37,25 @@
     });
 
     
-    var offset = $(window).height() / 1.2;
+    var offset = $(window).height() / 1.5;
     var waypoint = new Waypoint({
-      element: document.getElementById('section-track-map'),
+      element: document.getElementById('major-canes-map'),
       handler: function(direction) {
         if ( direction === 'down' ) {
-          //self._animateTrack();
+          self.zoomGlobe();
         }
       },
       offset: offset
+    });
+
+    var waypoint = new Waypoint({
+      element: document.getElementById('major-canes-map'),
+      handler: function(direction) {
+        if ( direction === 'up' ) {
+          self.resetGlobe();
+        }
+      },
+      offset: $(window).height()
     });
 
   }
@@ -73,7 +83,7 @@
       .scale(325)
       .translate([width / 2, height / 2])
       .clipAngle(90)
-      .rotate([70, -20])
+      .rotate([-50, -20])
       .precision(.1);
 
 
@@ -93,7 +103,7 @@
         .range([90, -90]);
 
     queue()
-      .defer(d3.json, "data/world-50.json")
+      .defer(d3.json, "data/world.json")
       .defer(d3.json, "data/us.json")
       .defer(d3.json, "data/hurricane-2004.json")
       .defer(d3.json, "data/hurricane-2005.json")
@@ -115,7 +125,7 @@
       self.majorSvg.append("g")
           .attr("class", "major-states")
         .selectAll("path")
-          .data(topojson.feature(world, world.objects.ne_50m_land).features)
+          .data(topojson.feature(world, world.objects.ne_110m_land).features)
         .enter().append("path")
           .attr('class', 'state')
           .attr("d", self.majorPath);
@@ -127,6 +137,7 @@
         .enter().append("path")
           .attr('class', 'state')
           .attr("d", self.majorPath);
+
 
       self.majorSvg.append("g").selectAll("path")
         .data(topojson.feature(hurricane, hurricane.objects['2004hur']).features)
@@ -197,17 +208,40 @@
 
     }
 
-    //self.majorSvg.on("mousedown", function() {
-    //  var p = d3.mouse(this);
-    //  self.majorProjection.rotate([λ(p[0]), φ(p[1])]);
-    //  self.majorSvg.selectAll("path").attr("d", self.majorPath);
-    //});
 
     d3.select(self.frameElement).style("height", height + "px");
   }
 
 
 
+  App.prototype.zoomGlobe = function() {
+    var self = this;
+    var step = 20;
+    var scale = 325;
+
+    d3.transition()
+      .duration(3000)
+      .tween("rotate", function() {
+        var r = d3.interpolate(self.majorProjection.rotate(), [70, -20]);
+        return function(t) {
+          //console.log('t', t);
+          self.majorProjection.rotate(r(t));
+          self.majorProjection.scale(scale + step);
+          self.majorSvg.selectAll("path").attr("d", self.majorPath);
+          scale = scale + step;
+        };
+      })
+  }
+
+
+
+  App.prototype.resetGlobe = function() {
+    var self = this;
+    console.log('reset globe');
+    self.majorProjection.rotate([-50, -20]);
+    self.majorProjection.scale(325);
+    self.majorSvg.selectAll("path").attr("d", self.majorPath);
+  }
 
 
   App.prototype.initTrackMap = function() {
@@ -223,9 +257,12 @@
 
     $('#map-overlay').css({'height': height + 'px'});
 
+    var colors = ["#3498db", "#f1c40f", "#f39c12", "#e67e22", "#d35400", "#c0392b"];
+
     var windScale = d3.scale.quantile()
-      .domain([0, 140])
-      .range(colorbrewer.YlOrRd[9]);
+      .domain([30, 150])
+      .range(colors);
+      //.range(colorbrewer.YlOrRd[9]);
     
     this.trackProjection = d3.geo.conicConformal()
       .rotate([80, 0])
@@ -248,9 +285,10 @@
       .defer(d3.json, "data/world-50.json")
       .defer(d3.json, "data/us.json")
       .defer(d3.json, "data/katrina-track.json")
+      .defer(d3.json, "data/hurricane-2005.json")
       .await(ready);
 
-    function ready(error, world, states, tracks) {
+    function ready(error, world, states, tracks, majors) {
       if (error) throw error;
       console.log('world', world, 'states', states);
 
@@ -272,6 +310,22 @@
 
       // add circles to svg
       console.log('tracks: ', tracks);
+
+      self.trackSvg.append("g").selectAll("path")
+        .data(topojson.feature(majors, majors.objects['2005hur']).features)
+      .enter().append("path")
+        .attr("class", "hurricane")
+        .attr('opacity', function(d) {
+          if ( d.properties.Name === 'KATRINA') {
+            return 1;
+          } else {
+            return 0;
+          }
+        })
+        .attr("stroke", function(d) {
+          return windScale(d.properties.ATC_wind);
+        })
+        .attr("d", self.trackPath);
 
       self.trackSvg.selectAll("circle")
         .data(tracks.features)
@@ -325,11 +379,16 @@
 
           self._isAnimating = true;
           setTimeout(function() {
-            self._animateTrack();
-          },800);
+            console.log('self._isAnimating', self._isAnimating);
+            if ( self._isAnimating ) {
+              self._animateTrack();
+            }
+          },1000);
         });
         
-        self._animateTrack();
+        setTimeout(function() {
+          self._animateTrack();
+        },2500);
 
 
     }
@@ -349,11 +408,13 @@
         .each(function(d, i) {
           d3.select(this)
             .transition()
-            //.delay(function( d, i ) { return Math.floor((Math.random()*4000)+300); })
-            .delay( 200 * i )
+            .delay( 180 * i )
             .duration(3000)
             .attr('r', function(d) {
               return d.properties['Wind(WMO)'] / 10;
+            })
+            .each('start', function(d) {
+              $('#report-date').html(d.properties.ISO_time);
             });
           });
 
@@ -363,7 +424,7 @@
         .each(function(d, i) {
           d3.select(this)
             .transition()
-            .delay( 200 * i )
+            .delay( 180 * i )
             .duration(3000)
             .attr('r', function(d) {
               return d.properties['Wind(WMO)'] / 2.5;
@@ -371,6 +432,7 @@
             .each('end', function(f, o) {
               tick++; 
               if ( tick === 34 ) {
+                $('#report-date').html('');
                 if ( self._isAnimating ) {
                   setTimeout(function() {
                     d3.selectAll('.track')
@@ -610,7 +672,7 @@
         type: 'bar',
 
         color: function(inColor, data) {
-          var colors = ["#f0f9e8", "#bae4bc", "#7bccc4", "#2b8cbe"].reverse();
+          var colors = ["#fbb4ae", "#b3cde3", "#ccebc5", "#decbe4"];//.reverse();
           if (data.index !== undefined) {
             return colors[data.index];
           }

@@ -23,6 +23,30 @@ p {
   padding:0px;
 }
 
+.navbar {
+  background:none;
+  border-bottom:none;
+  position: absolute;
+  z-index: 100;
+  width:100%;
+  border:none;
+  a {
+    color:#FFF;
+  }
+  #brand {
+    width:200px;
+    text-align: center;
+    margin:auto;
+    font-weight: bold;
+    opacity: 0.8;
+    margin-top: 5px;
+  }
+}
+
+#auth {
+  font-size:12px;
+}
+
 .text-large {
   font-weight: bold;
   font-size: 2em;
@@ -72,7 +96,7 @@ p {
   //-webkit-transition: -webkit-filter 0.5s ease;
   #main-title {
     width: 100%;
-    padding-top: 10%;
+    padding-top: 12%;
     text-align: center;
     font-size: 9.5rem;
     line-height: 4rem;
@@ -96,7 +120,17 @@ p {
 #katrina-track-map {
   width:100%;
   position: relative;
+  background:#000;
+  #report-date {
+    position: absolute;
+    color: #FFF;
+    bottom: 0px;
+    left: 0px;
+    font-size: 1rem;
+    opacity: 0.4;
+  }
   #map-overlay {
+    display: none;
     position: absolute;
     left: 0px;
     height: 500px;
@@ -108,26 +142,27 @@ p {
   #track-infowin {
     position:absolute;
     top: 200px;
+    color:#FFF;
   }
   .track {
     //fill:blue;
-    stroke:#444;
+    stroke:#FFF;
     stroke-width:0.7;
     cursor:pointer;
   }
   .track-outer {
     fill:none;
-    stroke:#CCC;
+    stroke:#555;
     stroke-width:0.4; 
   }
 }
 
 
 .states {
-  //fill: #EEE;
+  fill: #444;
   //fill: #09243E;
-  fill:#E2E2E2;
-  stroke: #999;
+  //fill:#E2E2E2;
+  stroke: #666;
   stroke-width:0.5;
   stroke-linejoin: round;
 }
@@ -189,6 +224,7 @@ p {
 #track-map-legend {
   text-align: right;
   position:relative;
+  color:#FFF;
   #track-map-legend-inner {
     position:absolute;
     right:0px;
@@ -202,11 +238,11 @@ p {
     float: right;
     height: 20px;
     border-radius: 40px;
-    border: 1px solid #444;
+    border: 1px solid #FFF;
     margin-left: 4px;
   }
   .legend-vals {
-    width: 190px;
+    width: 160px;
     float: right;
     font-size: 0.7em;
   }

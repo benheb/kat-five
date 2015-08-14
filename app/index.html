@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>KAT-5 | 10 Year Anniversary of Hurricane Katrina</title>
+    <title>KAT FIVE | 10 Year Anniversary of Hurricane Katrina</title>
 
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <!-- Place favicon.ico in the root directory -->
@@ -25,8 +25,59 @@
     <!-- build:js scripts/vendor/modernizr.js -->
     <script src="/bower_components/modernizr/modernizr.js"></script>
     <!-- endbuild -->
+    
+    <meta property="og:site_name" content="Weather5280" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="KAT FIVE" />
+    <meta property="og:description" content="A look back at hurricane Katrina and where recovery in the region is 10 years after the category 3 storm slammed the Gulf Coast devistating New Orleans and the surrounding region." />
+    <meta property="og:url" content="http://www.weather5280.com/kat-five" />
+    <meta property="og:image" content="http://www.weather5280.com/kat-five/images/kat.jpg" />
+    <meta property="article:published_time" content="2015-08-14T18:55:24.570Z" />
+    <meta property="article:modified_time" content="2015-08-14T19:06:06.289Z" />
+    <meta property="article:tag" content="New Orleans" />
+    <meta property="article:tag" content="Hurricane" />
+    <meta property="article:tag" content="Katrina" />
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="KAT FIVE" />
+    <meta name="twitter:description" content="A look back at hurricane Katrina and where recovery in the region is 10 years after the category 3 storm slammed the Gulf Coast devistating New Orleans and the surrounding region." />
+    <meta name="twitter:url" content="http://www.weather5280.com/kat-five" />
+    <meta name="twitter:image:src" content="http://www.weather5280.com/kat-five/images/kat.jpg" />
+    
+    <script type="application/ld+json">
+      {
+          "@context": "http://schema.org",
+          "@type": "Article",
+          "publisher": "Weather5280",
+          "author": {
+              "@type": "Person",
+              "name": "Brendan Heberton",
+              "image": "//www.gravatar.com/avatar/5146267d8f7e447f98957e7f068cf5c3?d=404&s=250",
+              "url": "http://www.weather5280.com/author/brendan-heberton",
+              "sameAs": null,
+              "description": "Brendan is founder of Weather5280. He is co-founder of FreshyMap, works at the Environmental Systems Research Institute (Esri), and develops software for geospatial data analysis and visualization."
+          },
+          "headline": "KAT FIVE",
+          "url": "http://www.weather5280.com/kat-five",
+          "datePublished": "2015-08-14T18:55:24.570Z",
+          "dateModified": "2015-08-14T19:06:06.289Z",
+          "image": "http://www.weather5280.com/kat-five/images/kat.jpg",
+          "keywords": "Katrina, Hurricane, New Orleans, Tropics",
+          "description": "A look back at hurricane Katrina and where recovery in the region is 10 years after the category 3 storm slammed the Gulf Coast devistating New Orleans and the surrounding region."
+      }
+    </script>
   </head>
   <body>
+
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <div class="navbar-header">
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <div id="brand"><a href="/">Weather5280</a></a>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
     
     <div class="section" id="section-intro">
       <div id="main-title">KAT FIVE</div>
@@ -37,7 +88,11 @@
     <div class="section" id="section-about-katrina">
       <div class="text">
         <p>
-          <span class="text-large">Hurricane Katrina</span> made multiple U.S. landfalls during the last days of meteorological summer, 2005. First slamming Florida on August 25th, 2005 as a category 1 hurricane, the cyclone would move into the Gulf of Mexico and strengthen before making a second landfall as a category 3 hurricane in Louisiana on the morning of August, 29th, 2005. 
+          <span id="auth">By BRENDAN HEBERTON.&nbsp;&nbsp;Aug 18, 2015</span>
+        </p>
+        <br />
+        <p>
+          <span class="text-large">Hurricane Katrina</span> made multiple U.S. landfalls during the last days of August, 2005. First slamming Florida on August 25th, 2005 as a category 1 hurricane, the cyclone would move into the Gulf of Mexico and strengthen before making a second landfall as a category 3 hurricane in Louisiana on the morning of August, 29th, 2005. 
         </p>
         <br />
         <p>
@@ -60,18 +115,17 @@
         <div id="track-map-legend" class="container">
           <div id="track-map-legend-inner">
             <div><b>Hurricane Katrina Track and Wind Speed</b> (NOAA)</div>
+            <div id="report-date"></div>
             <div class="swatch-container">
-              <div class="legend-swatch" style="background:#b10026"></div>
-              <div class="legend-swatch" style="background:#e31a1c"></div>
-              <div class="legend-swatch" style="background:#fc4e2a"></div>
-              <div class="legend-swatch" style="background:#fd8d3c"></div>
-              <div class="legend-swatch" style="background:#feb24c"></div>
-              <div class="legend-swatch" style="background:#fed976"></div>
-              <div class="legend-swatch" style="background:#ffeda0"></div>
-              <div class="legend-swatch" style="background:#ffffcc"></div>
+              <div class="legend-swatch" style="background:#c0392b"></div>
+              <div class="legend-swatch" style="background:#d35400"></div>
+              <div class="legend-swatch" style="background:#e67e22"></div>
+              <div class="legend-swatch" style="background:#f39c12"></div>
+              <div class="legend-swatch" style="background:#f1c40f"></div>
+              <div class="legend-swatch" style="background:#3498db"></div>
             </div>
             <div class="legend-vals">
-              <div class="legend-min">&lt;30kt</div>
+              <div class="legend-min">&lt;55kt</div>
               <div class="legend-max">&gt;140kt</div>
             </div>
           </div>
@@ -113,11 +167,15 @@
       <div class="text">
         <h3 class="text-large">Human Toll</h3>
         <p>
-          The death toll from Katrina was devastating. There are many estimates on for the number of lives lost ranging from 1,300 to nearly 1,900. The commonly held number is 1,833, though many have disputed this number in recent years.
+          The death toll from Katrina was devastating. There are many estimates on for the number of lives lost ranging from 1,300 to nearly 1,900. The commonly held number is 1,833, though many have disputed this number in recent years. 
         </p>
         <br />
         <p>
           In 2008, the Department of Health and Hospitals in Louisiana published a report that determined an upper-bound estimate of 1,400 lives lost. The same study found that of the confirmed 971 victims in Louisiana 53% were men, and 51% were African American. Over half of all fatalities were victims of 74 years and older.
+        </p>
+        <br />
+        <p>
+          Whether 1,833 or 1,400, Katrina was the <a href="http://www.wunderground.com/hurricane/usdeadly.asp">deadliest United States hurricane since 1928</a>, and 3rd deadliest on record for the country. Other more recent major hurricanes saw much lower death tolls, including hurricane Andrew in 1992, when less than 100 people were killed. Over the last decade there have been a lot of theories as to why so many people lost their lives in Katrina, but whatever the root cause it was clear that underserved populations and the elderly were particularly vulnerable in the wake of the landfall and breached levees. 
         </p>
         <br />
       </div>
@@ -135,7 +193,7 @@
       <div class="text">
         <h3 class="text-large">Population Displaced</h3>
         <p>
-          For those fleeing the storm the journey was only beginning when Katrina made landfall the morning of August 29th. The dramatic shift in population would have a ripple effect across the country, as hundreds of thousands of people left home not knowing if they would ever return. 
+          For those that escaped the wrather of Katrina, the journey was only beginning when the hurricane made landfall the morning of August 29th. The dramatic shift in population would have a ripple effect across the country, as hundreds of thousands of people left home not knowing if they would ever return. While many residents returned to the only homes they knew in the weeks and months after Katrina, a decade later it's clear tens of, or even hundreds of thousands of people never did return. 
         </p>
         <br />
         <p>
@@ -285,7 +343,11 @@
         </p>
         <br />
         <p>
-          <b>TODO CHECK THIS AND EXPAND ON</b>The breached levees have now been rebuilt, with an estimated price tag of <b>$14.3 billion</b>.
+          The breached levees have since been rebuilt, with an estimated price tag of <b>$14.3 billion</b>. To many marking the 10 year anniversary of Katrina there is an err of caution in celebrating the reinforced infrastructure meant to protect New Orleans if God forbid it were to take another hit. An engineer from the University of California, Berkeley inspected the levees in 2007 and found "several week spots" according to an article published in National Geographic. Ten years later, and the debate as to <a href="http://www.nytimes.com/2015/08/02/opinion/sunday/is-new-orleans-safe.html?_r=0">how safe New Orleans is</a> when it comes to the levees holding up under a 100 year event (or 500, or 1000) carries on. 
+        </p>
+        <br />
+        <p>
+          In returning to Katrina 10 years later, there are so many aspects to uncover and understand, in what was a complex breakdown of social, economic, and infrastructure set in place to protect the citizens of the region. In 2006, NPR took a look at "one of the worst engineering disasters of all time", we share this story below. 
         </p>
         <br />
         <iframe src="http://www.npr.org/player/embed/5418521/5419261" width="100%" height="290" frameborder="0" scrolling="no"></iframe>
@@ -353,8 +415,7 @@
       <div class="text">
         <br />
         <p>
-          Needs a final closing paragraph here!
-          <b>TODO</b>
+          Since 2005 a lot has changed, and no doubt the next time a major hurricane threatens a U.S. landfall the hysteria on social media will be something we've never seen before. Let us hope that the lessons learned from Katrina help us to better prepare, and that in a world of everything being extreme, and coming off such a long stretch of major-less landfalls, we haven't fallen complacent to the damage the cyclones can cause. 
         </p>
         <br />
       </div>
@@ -411,28 +472,23 @@
 
 
     <ul>
-      <li>infrastructure (then and now)</li>
       <li>economy</li>
       <li>highlight total cost of Katrina somewhere....</li>
-      <li>animated satellite</li>
       <li>something more about flooding?</li>
       <li>flood extent / depth map</li>
-      <li>add hurricane track to pop displacement map</li>
       <li>closing section: it could happen again, crazy that this happened, U.S. in exceptional hurricane "drought" (show stats)</li>
-      <li>MAKE A TWITTER CARD (see ghost)</li>
-      <li>Add DISQUS!</li>
+      <li>CHECK meta URLS and TIME STAMPS</li>
+      <li>CHECK DISQUIS URL</li>
       <li>talk about fema, gov, walmart?</li>
-      <li>add my byline!</li>
       <li>update google analytics to be for weather5280</li>
       <li>ADD SHARE buttons to end</li>
     </ul>
     
 <br />
 From chelm: 
-1. make first map darker, and track pop more 
-2. try showing it as a line, with dots
-3. loop animation, not make click to replay 
 4. change favicon 
+5. focus on human 
+6. what sucked about how people lived before 
 
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
@@ -477,6 +533,7 @@ From chelm:
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
     
     <!-- build:js scripts/main.js -->
+    <script src="scripts/mousewheel.js"></script>
     <script src="scripts/colorbrewer.js"></script>
     <script src="scripts/main.js"></script>
     <!-- endbuild -->

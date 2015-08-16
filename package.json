@@ -39,6 +39,7 @@
     }
   },
   "dependencies": {
-    "gulp-gh-pages": "^0.5.2"
+    "gulp-gh-pages": "^0.5.2",
+    "lodash": "^3.10.1"
   }
 }

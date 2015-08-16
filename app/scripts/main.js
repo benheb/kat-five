@@ -9,13 +9,32 @@
     this.options = options;
     this._isAnimating = true;
 
+    queue()
+      .defer(d3.json, "data/world-50.json")
+      .defer(d3.json, "data/us.json")
+      .defer(d3.json, "data/katrina-track.json")
+      .defer(d3.json, "data/hurricane-2005-small.json")
+      .await(function(error, world, states, tracks, majors) {
+        self.initTrackMap(error, world, states, tracks, majors);
+        next(majors);
+      });
+
+
+    function next(hurricane2) {
+      queue()
+        .defer(d3.json, "data/world.json")
+        .defer(d3.json, "data/us.json")
+        .defer(d3.json, "data/hurricane-2004-small.json")
+        .await(function(error, world, states, hurricane) {
+          self.initMajorCanes(error, world, states, hurricane, hurricane2)
+        });
+    }
+
     this.wireScrollTricks();
-    this.initTrackMap();
     this.initPopulationMap();
     this.initOrleansChart();
     this.initPeopleChart();
     this.initHomesChart();
-    this.initMajorCanes();
     this.initJobsCharts();
     this.wire();
   }
@@ -62,7 +81,7 @@
 
 
 
-   App.prototype.initMajorCanes = function() {
+   App.prototype.initMajorCanes = function(error, world, states, hurricane, hurricane2) {
     var self = this;
     var margin = {top: 10, left: 0, bottom: 10, right: 0}
       , width = parseInt(d3.select('#katrina-track-map').style('width'))
@@ -102,16 +121,10 @@
         .domain([0, height])
         .range([90, -90]);
 
-    queue()
-      .defer(d3.json, "data/world.json")
-      .defer(d3.json, "data/us.json")
-      .defer(d3.json, "data/hurricane-2004.json")
-      .defer(d3.json, "data/hurricane-2005.json")
-      .await(ready);
 
-    function ready(error, world, states, hurricane, hurricane2) {
+    //function ready(error, world, states, hurricane, hurricane2) {
       if (error) throw error;
-      console.log('world', world, 'states', states, 'hurricane', hurricane);
+      console.log('world', world, 'states', states, 'hurricane TWo!!', hurricane2);
       
       self.majorSvg.append("defs").append("path")
         .datum({type: "Sphere"})
@@ -206,7 +219,7 @@
         })
         .attr("d", self.majorPath);
 
-    }
+    //}
 
 
     d3.select(self.frameElement).style("height", height + "px");
@@ -218,6 +231,7 @@
     var self = this;
     var step = 20;
     var scale = 325;
+    if ( !self.majorProjection ) { return; }
 
     d3.transition()
       .duration(3000)
@@ -244,7 +258,7 @@
   }
 
 
-  App.prototype.initTrackMap = function() {
+  App.prototype.initTrackMap = function(error, world, states, tracks, majors) {
     var self = this;
     var margin = {top: 10, left: 0, bottom: 10, right: 0}
       , width = parseInt(d3.select('#katrina-track-map').style('width'))
@@ -281,14 +295,7 @@
         .attr("width", width)
         .attr("height", height);
 
-    queue()
-      .defer(d3.json, "data/world-50.json")
-      .defer(d3.json, "data/us.json")
-      .defer(d3.json, "data/katrina-track.json")
-      .defer(d3.json, "data/hurricane-2005.json")
-      .await(ready);
-
-    function ready(error, world, states, tracks, majors) {
+    //function ready(error, world, states, tracks, majors) {
       if (error) throw error;
       console.log('world', world, 'states', states);
 
@@ -391,7 +398,7 @@
         },2500);
 
 
-    }
+    //}
 
     d3.select(self.frameElement).style("height", height + "px");
   }
@@ -443,10 +450,10 @@
                         .transition()
                         .duration(1000)
                         .attr('r', 0);
-                  },2000);
+                  },1700);
                   setTimeout(function() {
                     self._animateTrack();
-                  },3600);
+                  },2900);
                 }
               }
             })
@@ -489,29 +496,15 @@
     console.log('width:', width);
     console.log('height:', height);
     this.years = {
-      year01: d3.map(),
-      year02: d3.map(),
-      year03: d3.map(),
       year04: d3.map(),
       year05: d3.map(),
-      year06: d3.map(),
-      year07: d3.map(),
-      year08: d3.map(),
-      year09: d3.map(),
-      year10: d3.map()
+      year06: d3.map()
     }
 
     this.popChange = {
-      year01: d3.map(),
-      year02: d3.map(),
-      year03: d3.map(),
       year04: d3.map(),
       year05: d3.map(),
-      year06: d3.map(),
-      year07: d3.map(),
-      year08: d3.map(),
-      year09: d3.map(),
-      year10: d3.map()
+      year06: d3.map()
     }
 
     this.o = d3.scale.quantile()
@@ -536,19 +529,23 @@
     queue()
       .defer(d3.json, "data/us-detail.json")
       .defer(d3.json, "data/us.json")
-      .defer(d3.csv, "data/pop-2000-2010.csv", function(d) { 
+      .defer(d3.csv, "data/pop.csv", function(d) { 
         
         if ( d.SEX === "0" && d.ORIGIN === "0" && d.RACE === "0" ) {
-          //console.log('d.county', d.COUNTY);
-          for ( var i = 1; i<=10; i++ ) {
-            var plus = ( i !== 10 ) ? '0' : '';
-            var val = d['POPESTIMATE20'+plus+i] / d['POPESTIMATE200'+(i-1)];
-            var popChange = d['POPESTIMATE20'+plus+i] - d['POPESTIMATE200'+(i-1)];
-
-            var q = 'year'+plus+i;
-            self.years[q].set(d.STATE + d.COUNTY, +val);
-            self.popChange[q].set(d.STATE + d.COUNTY, +popChange);
+          if ( d.STATE < 10 ) {
+            d.STATE = '0' + d.STATE;
           }
+          if ( d.COUNTY < 10 ) {
+            d.COUNTY = '00' + d.COUNTY;
+          } else if ( d.COUNTY < 100 ) {
+            d.COUNTY = '0' + d.COUNTY;
+          }
+
+          var val = d['POPESTIMATE2006'] / d['POPESTIMATE2005'];
+          var popChange = d['POPESTIMATE2006'] - d['POPESTIMATE2005'];
+
+          self.years['year06'].set(d.STATE + d.COUNTY, +val);
+          self.popChange['year06'].set(d.STATE + d.COUNTY, +popChange);
         }
         
       })
@@ -558,6 +555,7 @@
       if (error) throw error;
 
       console.log('us', us, 'states', states);
+      console.log('years', self.years, 'popChange', self.popChange)
 
       self.svg.append("g")
           .attr("class", "counties")
@@ -569,6 +567,7 @@
             var area = self.path.area(d);
 
             var cnty = d.properties.STATE_FIPS + d.properties.CNTY_FIPS;
+            //console.log('cnty', cnty);
             var a = self.years['year06'].get(d.properties.STATE_FIPS + d.properties.CNTY_FIPS);
             var c = self.popChange['year06'].get(d.properties.STATE_FIPS + d.properties.CNTY_FIPS);
             var b = a * 100;
